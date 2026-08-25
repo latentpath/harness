@@ -148,6 +148,7 @@ harness/work/<task-id>/approval.json
 ```
 
 然后运行 Harness 提供的 approval checker。
+如：bash harness/scripts/check-approval.sh add-login-flow
 
 批准后不要再修改 `plan.md`。
 
