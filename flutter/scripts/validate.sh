@@ -30,9 +30,15 @@ fail() {
 
 TASK_DIR=""
 if [ -n "${TASK_ID:-}" ]; then
+  python3 "$HARNESS_DIR/scripts/harnessctl.py" check-approval "$TASK_ID" >/dev/null
   TASK_DIR="$HARNESS_DIR/work/$TASK_ID"
   mkdir -p "$TASK_DIR"
   : > "$TASK_DIR/validation.log"   # reset so stale output is never reused
+  {
+    echo "repository_revision=$(git rev-parse HEAD 2>/dev/null || echo unavailable)"
+    echo "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    echo "flutter=$(flutter --version --machine 2>/dev/null || echo unavailable)"
+  } >> "$TASK_DIR/validation.log"
 fi
 
 # Run one step, tee to the log when evidence capture is active, and accumulate
@@ -50,16 +56,42 @@ run_step() {
 
 overall=0
 
-run_step "flutter pub get" flutter pub get          || overall=1
-run_step "dart format --set-exit-if-changed ." \
-  dart format --set-exit-if-changed .                || overall=1
-run_step "flutter analyze" flutter analyze           || overall=1
-run_step "flutter test" flutter test                 || overall=1
+pub_status=0
+format_status=0
+analyze_status=0
+test_status=0
+
+run_step "flutter pub get" flutter pub get || { pub_status=$?; overall=1; }
+run_step "dart format check" \
+  dart format --output=none --set-exit-if-changed . || { format_status=$?; overall=1; }
+run_step "flutter analyze" flutter analyze || { analyze_status=$?; overall=1; }
+run_step "flutter test" flutter test || { test_status=$?; overall=1; }
 
 # Record the exit code of this run as validation evidence (always written, pass
 # or fail, so a missing status never masquerades as a stale pass).
 if [ -n "$TASK_DIR" ]; then
   echo "$overall" > "$TASK_DIR/validation.status"
+  python3 - "$TASK_DIR/validation.json" "$overall" "$pub_status" "$format_status" "$analyze_status" "$test_status" <<'PY'
+import datetime as dt
+import json
+import sys
+
+path, overall, pub, formatting, analyze, tests = sys.argv[1:]
+payload = {
+    "schema_version": 1,
+    "finished_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+    "exit_code": int(overall),
+    "steps": [
+        {"name": "flutter pub get", "exit_code": int(pub)},
+        {"name": "dart format check", "exit_code": int(formatting)},
+        {"name": "flutter analyze", "exit_code": int(analyze)},
+        {"name": "flutter test", "exit_code": int(tests)},
+    ],
+}
+with open(path, "w", encoding="utf-8") as stream:
+    json.dump(payload, stream, indent=2, sort_keys=True)
+    stream.write("\n")
+PY
 fi
 
 exit "$overall"

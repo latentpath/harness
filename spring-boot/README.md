@@ -13,8 +13,8 @@ and a technical validation command.
 2. Follow `harness/prompts/01-spec.md` to write `spec.md`.
 3. Follow `harness/prompts/02-plan.md` to write `plan.md`.
 4. Explicitly approve every plan in the full four-stage workflow by writing
-   `harness/work/<task-id>/approval.json` with `status`, `plan_sha256`, `approved_at`,
-   and `approved_by`.
+   `harness/work/<task-id>/approval.json` with `status`, `spec_sha256`,
+   `plan_sha256`, `approved_at`, and `approved_by`.
 5. Follow `harness/prompts/03-implement.md` to implement, test, and write
    `development.md`.
 6. Follow `harness/prompts/04-review.md` to write `review.md`.
@@ -32,7 +32,10 @@ for handoff rather than a prior chat transcript.
   (Main layer), `phase.md` (phase gate), `project-baseline.md` (spec input).
 - `scripts/validate.sh`: Maven test validation.
 - `scripts/check-approval.sh`: verifies approval status and the current plan
-   SHA-256 before implementation.
+   and spec SHA-256 values before implementation.
+- `scripts/harnessctl.py`: records state and checks stage file ownership.
+- `scripts/metrics-capture.sh`: emits machine-readable task metrics.
+- `scripts/self-check.sh`: validates the installed Harness files and scripts.
 
 When `TASK_ID` is supplied, validation resets and writes
 `harness/work/<task-id>/validation.log` and `validation.status`; `0` means PASS,

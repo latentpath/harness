@@ -10,6 +10,10 @@ evidence is `NOT_RUN`; a failed status is `FAILED`. Machine evidence wins over
 contradictory narrative claims in `development.md`. Review only; do not edit
 code.
 
+Run `python3 harness/scripts/harnessctl.py stage-start <task-id> review` before
+writing. After writing, run `stage-check <task-id> review`, then
+`state <task-id> review <VERDICT>` with the same script.
+
 Review in this order: (1) SPEC, (2) approved PLAN, (3) actual implementation,
 (4) machine validation evidence, and (5) the development narrative. Verify the
 implementation against SPEC independently, then separately against the

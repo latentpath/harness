@@ -4,6 +4,10 @@ Read `harness/AGENTS.md` and `harness/work/<task-id>/spec.md` first. Inspect
 the relevant code paths, tests, configuration, and dependencies before citing
 an existing convention or file path.
 
+Run `python3 harness/scripts/harnessctl.py stage-start <task-id> plan` before
+writing. After writing, run `stage-check <task-id> plan`, then
+`state <task-id> plan <STATUS>` with the same script.
+
 Create `harness/work/<task-id>/plan.md`. Do not edit production code, tests,
 or configuration. Do not approve the plan yourself.
 

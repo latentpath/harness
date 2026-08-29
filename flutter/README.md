@@ -14,10 +14,10 @@ artifacts, and a technical validation command.
 3. Read and follow `harness/prompts/02-plan.md` to write `plan.md`.
 4. Explicitly approve every plan in the full four-stage workflow by writing
   `harness/work/<task-id>/approval.json` with `status: approved`,
-  `plan_sha256` of the current `plan.md`, `approved_at`, and `approved_by`.
+  `spec_sha256`, `plan_sha256`, `approved_at`, and `approved_by`.
 5. Read and follow `harness/prompts/03-implement.md` to implement, test, and
    write `development.md`. The implement stage refuses to edit until
-    `approval.json` is approved and its `plan_sha256` matches `plan.md`.
+    `approval.json` is approved and its SPEC and PLAN hashes match.
 6. Read and follow `harness/prompts/04-review.md` to write `review.md`,
   including the `Security Review` section when applicable.
 
@@ -35,10 +35,10 @@ handoff; pass the relevant task artifacts and let the next stage inspect code.
 ## Approval
 
 `harness/work/<task-id>/approval.json` is the **single source of truth** for the
-approval fact. Its `plan_sha256` binds the plan content at approval time; if
-`plan.md` changes afterward, the implement stage detects the mismatch and
-stops. The `## Approval` section of `plan.md` is informational only and never
-authoritative on its own. A missing `approval.json` means the plan is a draft.
+approval fact. It binds both SPEC and PLAN at approval time; if either changes,
+the implement stage detects the mismatch and stops. The `## Approval` section
+of `plan.md` is informational only and never authoritative on its own. A
+missing `approval.json` means the plan is a draft.
 
 ## Evidence
 
@@ -57,6 +57,9 @@ authoritative on its own. A missing `approval.json` means the plan is a draft.
 - `scripts/validate.sh`: Flutter formatting, analysis, and test validation;
   captures validation evidence when `TASK_ID` is set.
 - `scripts/metrics-capture.sh`: emits `metrics.json` for a task.
+- `scripts/harnessctl.py`: validates approval, records `state.json`, and checks
+  stage ownership against per-stage baselines.
+- `scripts/self-check.sh`: validates the installed Harness files and scripts.
 
 `work/` is intentionally task-scoped so parallel work and old handoffs do not
 share a mutable workflow state file.

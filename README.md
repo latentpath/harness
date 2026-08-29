@@ -13,6 +13,20 @@ Each pack contains a technology-specific `AGENTS.md`, four prompts in
 `templates/`, and a technical validation script. Read the selected pack's
 `README.md` for installation and use.
 
+## Workflow Profiles
+
+- **Full** (default for feature, cross-layer, ambiguous, or high-risk work):
+  `SPEC -> PLAN -> APPROVAL -> IMPLEMENT -> VALIDATE -> REVIEW`.
+- **Lite** (only for small, low-risk, fully specified changes): preserve the
+  request as `spec.md`, then run `PLAN -> APPROVAL -> IMPLEMENT -> VALIDATE`.
+  Escalate to Full for public contracts, persistence, authentication,
+  concurrency, migrations, destructive work, or material ambiguity.
+
+`scripts/harnessctl.py` is a lightweight enforcement helper, not an agent
+runtime. It validates task IDs and approval JSON, binds approval to SPEC and
+PLAN, records `state.json`, captures stage baselines, and checks file
+ownership. Run `bash harness/scripts/self-check.sh` after installation.
+
 All packs share the same contract. SPEC is the normative requirement truth.
 PLAN proposes an implementation strategy and must not weaken, remove, or
 reinterpret a SPEC requirement. Project constitutions and phase gates provide

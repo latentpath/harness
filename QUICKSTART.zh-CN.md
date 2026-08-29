@@ -141,6 +141,7 @@ harness/work/<task-id>/approval.json
 ```json
 {
   "status": "approved",
+  "spec_sha256": "<spec.md SHA-256>",
   "plan_sha256": "<plan.md SHA-256>",
   "approved_at": "<ISO-8601 timestamp>",
   "approved_by": "human"
@@ -150,7 +151,7 @@ harness/work/<task-id>/approval.json
 然后运行 Harness 提供的 approval checker。
 如：bash harness/scripts/check-approval.sh add-login-flow
 
-批准后不要再修改 `plan.md`。
+批准后不要再修改 `spec.md` 或 `plan.md`；审批检查会校验两者的哈希。
 
 如果 PLAN 改变，必须重新计算 hash 并重新批准。
 
@@ -220,6 +221,21 @@ CHANGES_REQUESTED
 ```
 
 ### 8. 日常使用原则
+
+默认使用 Full：`SPEC -> PLAN -> APPROVAL -> IMPLEMENT -> VALIDATE -> REVIEW`。
+对于低风险、需求完全明确的小改动，可以使用 Lite：先把原始需求保存为
+`spec.md`，再执行 `PLAN -> APPROVAL -> IMPLEMENT -> VALIDATE`。如果涉及公共
+接口、持久化、认证、并发、迁移、破坏性操作或发现实质歧义，必须升级为
+Full。
+
+安装后运行一次 Harness 自检：
+
+```bash
+bash harness/scripts/self-check.sh
+```
+
+阶段 prompt 会调用 `harnessctl.py` 记录基线、检查文件 ownership，并将
+结构化阶段结果写入 `state.json`。
 
 Harness 不要求所有阶段使用同一个 Agent 或同一个模型。
 

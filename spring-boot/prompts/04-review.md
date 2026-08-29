@@ -5,6 +5,10 @@ Read `harness/AGENTS.md`, `harness/work/<task-id>/spec.md`,
 `harness/work/<task-id>/development.md`. Inspect the actual diff, changed
 paths, relevant tests, and validation evidence. Review only; do not edit code.
 
+Run `python3 harness/scripts/harnessctl.py stage-start <task-id> review` before
+writing. After writing, run `stage-check <task-id> review`, then
+`state <task-id> review <VERDICT>` with the same script.
+
 Review in this order: (1) SPEC, (2) approved PLAN, (3) actual implementation,
 (4) machine validation evidence, and (5) the development narrative. Verify the
 implementation against SPEC independently, then separately against the

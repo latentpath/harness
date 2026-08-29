@@ -25,7 +25,7 @@ implementation details and repository constraints, but must not weaken, remove,
 or reinterpret a SPEC requirement. Observed truth is the verified repository
 reality: source code, tests, configuration, dependencies, external contracts,
 and runtime behavior. Evidence records what happened:
-`approval.json`, `validation.log`, `validation.status`, the actual diff,
+`approval.json`, `validation.log`, `validation.status`, `validation.json`, the actual diff,
 `development.md`, and `review.md`.
 
 Observed truth does not silently override SPEC. If repository constraints make

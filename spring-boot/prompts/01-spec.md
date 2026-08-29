@@ -3,6 +3,10 @@
 Read `harness/AGENTS.md` first. Read the request and inspect only the code,
 tests, configuration, or external contract needed to resolve material facts.
 
+Run `python3 harness/scripts/harnessctl.py stage-start <task-id> spec` before
+writing. After writing, run `stage-check <task-id> spec`, then
+`state <task-id> spec <STATUS>` with the same script.
+
 Create `harness/work/<task-id>/spec.md`. Do not edit production code, tests,
 or configuration in this stage.
 
