@@ -13,12 +13,17 @@ Each pack contains a technology-specific `AGENTS.md`, four prompts in
 `templates/`, and a technical validation script. Read the selected pack's
 `README.md` for installation and use.
 
+The operator chooses a task ID but does not create its work directory. The
+active stage prompt runs `harnessctl.py stage-start`, which validates the ID,
+creates `harness/work/<task-id>/`, and records the stage baseline.
+
 ## Workflow Profiles
 
 - **Full** (default for feature, cross-layer, ambiguous, or high-risk work):
   `SPEC -> PLAN -> APPROVAL -> IMPLEMENT -> VALIDATE -> REVIEW`.
-- **Lite** (only for small, low-risk, fully specified changes): preserve the
-  request as `spec.md`, then run `PLAN -> APPROVAL -> IMPLEMENT -> VALIDATE`.
+- **Lite** (only for small, low-risk, fully specified changes): produce a
+  compact SPEC and PLAN in one preparation session, then run
+  `APPROVAL -> IMPLEMENT -> VALIDATE`.
   Escalate to Full for public contracts, persistence, authentication,
   concurrency, migrations, destructive work, or material ambiguity.
 
@@ -60,12 +65,12 @@ supported.
 Use the optional templates to decompose a project top-down, then execute each
 task bottom-up through the four stages:
 
-1. `templates/project-constitution.md` – fill once at inception. It is the
-   project's "Main" layer: store the filled copy as the project's root
-   `AGENTS.md` (or in the project `docs/`). It holds project facts.
-2. `templates/phase.md` – at the start of each phase, record the API gate
-   (allowed / blocked), phase constraints, and exit criteria. `spec` must not
-   cross the gate.
+1. `templates/project-constitution.md` – fill once at inception and store the
+   filled copy as the project's root `AGENTS.md`. It holds stable project
+   facts and governance; it does not hold the active phase or task status.
+2. `templates/phase.md` – store filled copies under project-owned paths such as
+   `docs/phases/phase-1.md`. Pass the governing phase path explicitly when
+   starting SPEC. `spec` records that path and must not cross its gate.
 3. `templates/project-baseline.md` – fill the project baseline (requirements /
    API contract / state model / quality gates) and use it as a source input
    for `spec`.

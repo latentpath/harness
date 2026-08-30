@@ -51,6 +51,14 @@
 - [e.g. application layer bypassing repository]
 - [e.g. multiple competing state sources]
 
-## Phase Gates
+## Phase Governance
 
-- Reference `templates/phase.md`; list the active phase here and update it as phases advance.
+- Project phase definitions live outside the Harness, for example under
+  `docs/phases/`.
+- Do not record the active phase in this constitution.
+- Every task identifies its governing phase definition when SPEC starts.
+- SPEC records the governing phase path and verifies that the task remains
+  within its allowed scope and contract gates.
+- Crossing a phase gate requires `BLOCKED` or `NEEDS_REVISION`, not silent
+  scope expansion.
+- Phase completion and advancement require an explicit human decision.
